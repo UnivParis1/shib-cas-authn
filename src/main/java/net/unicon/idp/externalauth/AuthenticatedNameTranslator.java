@@ -64,6 +64,10 @@ public class AuthenticatedNameTranslator implements CasToShibTranslator {
             logger.debug("No attributes released from CAS. Creating an IdP principal for {}", casPrincipal.getName());
             request.setAttribute(ExternalAuthentication.PRINCIPAL_NAME_KEY, casPrincipal.getName());
         }
+        // if we decide which CAS to use dynamically, we can not cache the result
+        // (otherwise the first succesful CAS login will be kept)
+        // (alternative is to use "idp.session.enabled = false" but you loose SLO)
+        request.setAttribute(ExternalAuthentication.DONOTCACHE_KEY, true);
     }
 
     @Override

@@ -41,7 +41,6 @@ import java.util.Set;
  * @author jgasper@unicon.net
  * @author aremmes (GitHub)
  */
-@WebServlet(name = "ShibcasAuthServlet", urlPatterns = {"/Authn/External/*"})
 public class ShibcasAuthServlet extends HttpServlet {
     private final Logger logger = LoggerFactory.getLogger(ShibcasAuthServlet.class);
     private static final long serialVersionUID = 1L;
@@ -167,7 +166,9 @@ public class ShibcasAuthServlet extends HttpServlet {
         super.init(config);
 
         final ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-        parseProperties(ac.getEnvironment());
+        String properties_prefix = config.getInitParameter("idp_properties_prefix");
+        if (properties_prefix == null) properties_prefix = "shibcas";
+        parseProperties(ac.getEnvironment(), properties_prefix);
 
         switch (ticketValidatorName) {
             case "cas10":
@@ -181,7 +182,7 @@ public class ShibcasAuthServlet extends HttpServlet {
         }
 
         if (ticketValidator == null) {
-            throw new ServletException("Initialization failed. Invalid shibcas.ticketValidatorName property: '"
+            throw new ServletException("Initialization failed. Invalid " + properties_prefix + ".ticketValidatorName property: '"
                 + ticketValidatorName + "'");
         }
 
@@ -189,8 +190,8 @@ public class ShibcasAuthServlet extends HttpServlet {
             parameterBuilders.add(new EntityIdParameterBuilder());
         }
 
-        buildTranslators(ac.getEnvironment());
-        buildParameterBuilders(ac);
+        buildTranslators(ac.getEnvironment(), properties_prefix);
+        buildParameterBuilders(ac, properties_prefix);
     }
 
     /**
@@ -198,30 +199,30 @@ public class ShibcasAuthServlet extends HttpServlet {
      *
      * @param environment a Spring Application Context's Environment object (tied to the IdP's root context)
      */
-    private void parseProperties(final Environment environment) {
+    private void parseProperties(final Environment environment, String properties_prefix) {
         logger.debug("reading properties from the idp.properties file");
-        casServerPrefix = environment.getRequiredProperty("shibcas.casServerUrlPrefix");
-        logger.debug("shibcas.casServerUrlPrefix: {}", casServerPrefix);
+        casServerPrefix = environment.getRequiredProperty(properties_prefix + ".casServerUrlPrefix");
+        logger.debug(properties_prefix + ".casServerUrlPrefix: {}", casServerPrefix);
 
-        casLoginUrl = environment.getRequiredProperty("shibcas.casServerLoginUrl");
-        logger.debug("shibcas.casServerLoginUrl: {}", casLoginUrl);
+        casLoginUrl = environment.getRequiredProperty(properties_prefix + ".casServerLoginUrl");
+        logger.debug(properties_prefix + ".casServerLoginUrl: {}", casLoginUrl);
 
-        serverName = environment.getRequiredProperty("shibcas.serverName");
-        logger.debug("shibcas.serverName: {}", serverName);
+        serverName = environment.getRequiredProperty(properties_prefix + ".serverName");
+        logger.debug(properties_prefix + ".serverName: {}", serverName);
 
-        ticketValidatorName = environment.getProperty("shibcas.ticketValidatorName", "cas30");
-        logger.debug("shibcas.ticketValidatorName: {}", ticketValidatorName);
+        ticketValidatorName = environment.getProperty(properties_prefix + ".ticketValidatorName", "cas30");
+        logger.debug(properties_prefix + ".ticketValidatorName: {}", ticketValidatorName);
 
-        entityIdLocation = environment.getProperty("shibcas.entityIdLocation", "append");
-        logger.debug("shibcas.entityIdLocation: {}", entityIdLocation);
+        entityIdLocation = environment.getProperty(properties_prefix + ".entityIdLocation", "append");
+        logger.debug(properties_prefix + ".entityIdLocation: {}", entityIdLocation);
 
-        doNotCache = Boolean.parseBoolean(environment.getProperty("shibcas.doNotCache"));
+        doNotCache = Boolean.parseBoolean(environment.getProperty(properties_prefix + ".doNotCache"));
         logger.debug(properties_prefix + ".doNotCache: {}", doNotCache);
     }
 
-    private void buildParameterBuilders(final ApplicationContext applicationContext) {
+    private void buildParameterBuilders(final ApplicationContext applicationContext, String properties_prefix) {
         final Environment environment = applicationContext.getEnvironment();
-        final String builders = StringUtils.defaultString(environment.getProperty("shibcas.parameterBuilders", ""));
+        final String builders = StringUtils.defaultString(environment.getProperty(properties_prefix + ".parameterBuilders", ""));
         for (final String parameterBuilder : StringUtils.split(builders, ";")) {
             try {
                 logger.debug("Loading parameter builder class {}", parameterBuilder);
@@ -242,10 +243,10 @@ public class ShibcasAuthServlet extends HttpServlet {
      * Attempt to build the set of translators from the fully qualified class names set in the properties. If nothing has been set
      * then default to the AuthenticatedNameTranslator only.
      */
-    private void buildTranslators(final Environment environment) {
+    private void buildTranslators(final Environment environment, String properties_prefix) {
         translators.add(new AuthenticatedNameTranslator());
 
-        final String casToShibTranslators = StringUtils.defaultString(environment.getProperty("shibcas.casToShibTranslators", ""));
+        final String casToShibTranslators = StringUtils.defaultString(environment.getProperty(properties_prefix + ".casToShibTranslators", ""));
         for (final String classname : StringUtils.split(casToShibTranslators, ';')) {
             try {
                 logger.debug("Loading translator class {}", classname);
