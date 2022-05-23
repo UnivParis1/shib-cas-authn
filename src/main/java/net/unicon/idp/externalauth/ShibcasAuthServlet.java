@@ -55,6 +55,7 @@ public class ShibcasAuthServlet extends HttpServlet {
     private String ticketValidatorName;
     private String entityIdLocation;
     private String casServerValidatorPrefix;
+    private Boolean doNotCache;
 
     private AbstractCasProtocolUrlBasedTicketValidator ticketValidator;
 
@@ -109,6 +110,10 @@ public class ShibcasAuthServlet extends HttpServlet {
             for (final CasToShibTranslator casToShibTranslator : translators) {
                 casToShibTranslator.doTranslation(request, response, assertion, authenticationKey);
             }
+            if (doNotCache) {
+                request.setAttribute(ExternalAuthentication.DONOTCACHE_KEY, true);
+            }
+
         } catch (final Exception e) {
             logger.error("Ticket validation failed, returning InvalidTicket", e);
             request.setAttribute(ExternalAuthentication.AUTHENTICATION_ERROR_KEY, "InvalidTicket");
@@ -215,6 +220,9 @@ public class ShibcasAuthServlet extends HttpServlet {
 
         casServerValidatorPrefix = StringUtils.defaultIfBlank(environment.getProperty("shibcas.casServerValidatorPrefix"), casServerPrefix);
         logger.debug("shibcas.casServerValidatorPrefix: {}", casServerValidatorPrefix);
+
+        doNotCache = Boolean.parseBoolean(environment.getProperty("shibcas.doNotCache"));
+        logger.debug(properties_prefix + ".doNotCache: {}", doNotCache);
     }
 
     private void buildParameterBuilders(final ApplicationContext applicationContext) {
