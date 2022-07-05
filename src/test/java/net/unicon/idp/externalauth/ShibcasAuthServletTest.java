@@ -276,7 +276,7 @@ public class ShibcasAuthServletTest {
         shibcasAuthServlet.init(createMockServletConfig("embed"));
 
         shibcasAuthServlet.startLoginRequest(request, response, false, false, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1%26entityId%3Dhttp%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1%26entityId%3Dhttp%253A%252F%252Ftest.edu%252Fsp");
     }
 
     @Test
