@@ -271,7 +271,7 @@ public class ShibcasAuthServlet extends HttpServlet {
             serviceParameterName, artifactParameterName, true);
 
         if ("embed".equalsIgnoreCase(entityIdLocation)) {
-            serviceUrl += (new EntityIdParameterBuilder().getParameterString(request, true));
+            serviceUrl += (new EntityIdParameterBuilder().getParameterString(request));
         }
 
 

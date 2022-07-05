@@ -18,22 +18,18 @@ public class EntityIdParameterBuilder implements IParameterBuilder {
 
     @Override
     public String getParameterString(final HttpServletRequest request, final String authenticationKey) {
-        return getParameterString(request, true);
+        return getParameterString(request);
     }
 
-    public String getParameterString(final HttpServletRequest request, final boolean encode) {
+    public String getParameterString(final HttpServletRequest request) {
         final String relayingPartyId = request.getAttribute(ExternalAuthentication.RELYING_PARTY_PARAM).toString();
 
         String rpId = "error-encoding-rpid";
 
-        if (encode == true) {
-            try {
-                rpId = URLEncoder.encode(relayingPartyId, "UTF-8");
-            } catch (final UnsupportedEncodingException e) {
-                logger.error("Error encoding the relying party id.", e);
-            }
-        } else {
-            rpId = relayingPartyId;
+        try {
+            rpId = URLEncoder.encode(relayingPartyId, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            logger.error("Error encoding the relying party id.", e);
         }
 
         return "&entityId=" + rpId;
