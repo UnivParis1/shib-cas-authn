@@ -68,7 +68,7 @@ public class ShibcasAuthServlet extends HttpServlet {
             final String ticket = WebUtils.safeGetParameter(request, artifactParameterName);
             final String gatewayAttempted = WebUtils.safeGetParameter(request, "gatewayAttempted");
             final String authenticationKey = ExternalAuthentication.startExternalAuthentication(request);
-            final boolean force = Boolean.parseBoolean(request.getAttribute(ExternalAuthentication.FORCE_AUTHN_PARAM).toString());
+	    final boolean force = Boolean.parseBoolean(request.getAttribute(ExternalAuthentication.FORCE_AUTHN_PARAM).toString());
             final boolean passive = Boolean.parseBoolean(request.getAttribute(ExternalAuthentication.PASSIVE_AUTHN_PARAM).toString());
 
             if ((ticket == null || ticket.isEmpty()) && (gatewayAttempted == null || gatewayAttempted.isEmpty())) {
@@ -261,7 +261,7 @@ public class ShibcasAuthServlet extends HttpServlet {
     }
 
     /**
-     * Use the CAS CommonUtils to build the CAS Service URL.
+     * Use the CAS WebUtils to build the CAS Service URL.
      */
     protected String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response) {
         String serviceUrl = WebUtils.constructServiceUrl(request, response, null, serverName,
@@ -277,7 +277,7 @@ public class ShibcasAuthServlet extends HttpServlet {
 
     /**
      * Like the above, but with a flag indicating whether we're validating a service ticket,
-     * in which case we should not modify the service URL returned by CAS CommonUtils; this
+     * in which case we should not modify the service URL returned by CAS WebUtils; this
      * avoids appending the entity ID twice when entityIdLocation=embed, since the ID is already
      * embedded in the string during validation.
      * @throws TicketValidationException 
