@@ -37,31 +37,16 @@ Installation
 **NOTE:** You should **ALWAYS** refers to the `README.md` file that is [packaged with the release](https://github.com/Unicon/shib-cas-authn/releases) for instructions.
 
 
-#### Update the IdP's `web.xml`
+#### Update the IdP's authn.properties file
 
-Add the ShibCas Auth Servlet entry in `IDP_HOME/edit-webapp/WEB-INF/web.xml`. If there's no existing `web.xml` file in that location, copy the original from `IDP_HOME/dist/webapp/WEB-INF/web.xml` into `IDP_HOME/edit-webapp/WEB-INF/web.xml` and edit there.
+In the `IDP_HOME/conf/authn/authn.properties` file, ensure the context path points to `Authn/External` as shown below.
 
-Example snippet `web.xml`:
-
-```xml
-...
-    <!-- Servlet for receiving a callback from an external CAS Server and continues the IdP login flow -->
-    <servlet>
-        <servlet-name>ShibCas Auth Servlet</servlet-name>
-        <servlet-class>net.unicon.idp.externalauth.ShibcasAuthServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ShibCas Auth Servlet</servlet-name>
-        <url-pattern>/Authn/External/*</url-pattern>
-    </servlet-mapping>
-...
 ```
 
 #### Update the IdP's authn.properties file
 
 1. Set the `idp.authn.flows` to `External` in `IDP_HOME/conf/authn/authn.properties`. Or, for advance cases, add `External` to the list if you have others.
-1. Add new properties for the ShibCas plugin.
+2. Add new properties for the ShibCas plugin.
 
 ```properties
 ...
