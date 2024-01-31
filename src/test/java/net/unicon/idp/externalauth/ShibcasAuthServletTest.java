@@ -34,7 +34,7 @@ import static org.mockito.Mockito.any;
 
 
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"javax.*.*", "com.sun.*","org.w3c.*", "org.xml.*","javax.management.*", "javax.net.ssl.*"})
+@PowerMockIgnore({"javax.*.*","jakarta.*.*", "com.sun.*","org.w3c.*", "org.xml.*","javax.management.*","jakarta.management.*","javax.net.ssl.*","jakarta.net.ssl.*"})
 @PrepareForTest({ExternalAuthentication.class, Cas20ServiceTicketValidator.class})
 public class ShibcasAuthServletTest {
     private String CONVERSATION = "conversation=e1s1";

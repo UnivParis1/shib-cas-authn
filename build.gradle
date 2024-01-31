@@ -5,8 +5,10 @@ apply plugin: 'maven-publish'
 
 defaultTasks 'clean', 'distZip', 'distTar'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 group = 'net.unicon'
 version = project.version
@@ -45,6 +47,8 @@ dependencies {
 
 test {
     jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+    jvmArgs "--add-opens", "java.base/java.util=ALL-UNNAMED"
+    jvmArgs "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED"
 }
 
 distributions {
