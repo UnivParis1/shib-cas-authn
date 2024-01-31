@@ -28,12 +28,12 @@ public abstract class CasAuthnMethodParameterBuilder implements IParameterBuilde
     public String getParameterString(final HttpServletRequest request, final String authenticationKey) {
         try {
             final ProfileRequestContext prc = ExternalAuthentication.getProfileRequestContext(authenticationKey, request);
-            final AuthenticationContext authnContext = prc.getSubcontext(AuthenticationContext.class, true);
+            final AuthenticationContext authnContext = prc.ensureSubcontext(AuthenticationContext.class);
             if (authnContext == null) {
                 logger.debug("No authentication context is available");
                 return "";
             }
-            final RequestedPrincipalContext principalCtx = authnContext.getSubcontext(RequestedPrincipalContext.class, true);
+            final RequestedPrincipalContext principalCtx = authnContext.ensureSubcontext(RequestedPrincipalContext.class);
             if (principalCtx == null || principalCtx.getRequestedPrincipals().isEmpty()) {
                 logger.debug("No authentication method parameter is found in the request attributes");
                 return "";

@@ -41,12 +41,12 @@ public class CasDuoSecurityRefedsAuthnMethodTranslator implements CasToShibTrans
     public void doTranslation(final HttpServletRequest request, final HttpServletResponse response, final Assertion assertion, final String authenticationKey) throws Exception {
 
         final ProfileRequestContext prc = ExternalAuthentication.getProfileRequestContext(authenticationKey, request);
-        final AuthenticationContext authnContext = prc.getSubcontext(AuthenticationContext.class, true);
+        final AuthenticationContext authnContext = prc.ensureSubcontext(AuthenticationContext.class);
         if (authnContext == null) {
             logger.debug("No authentication context is available");
             return;
         }
-        final RequestedPrincipalContext principalCtx = authnContext.getSubcontext(RequestedPrincipalContext.class, true);
+        final RequestedPrincipalContext principalCtx = authnContext.ensureSubcontext(RequestedPrincipalContext.class);
         if (principalCtx == null || principalCtx.getRequestedPrincipals().isEmpty()) {
             logger.debug("No requested principal context is available in the authentication context; Overriding class to {}", AuthnContext.PPT_AUTHN_CTX);
             overrideAuthnContextClass(AuthnContext.PPT_AUTHN_CTX, request, authenticationKey);
@@ -83,11 +83,11 @@ public class CasDuoSecurityRefedsAuthnMethodTranslator implements CasToShibTrans
 
     private void overrideAuthnContextClass(final String clazz, final HttpServletRequest request, final String authenticationKey) throws Exception {
         final ProfileRequestContext prc = ExternalAuthentication.getProfileRequestContext(authenticationKey, request);
-        final AuthenticationContext authnContext = prc.getSubcontext(AuthenticationContext.class, true);
+        final AuthenticationContext authnContext = prc.ensureSubcontext(AuthenticationContext.class);
         if (authnContext == null) {
             throw new IllegalArgumentException("No authentication method parameter is found in the request attributes");
         }
-        final RequestedPrincipalContext principalCtx = authnContext.getSubcontext(RequestedPrincipalContext.class, true);
+        final RequestedPrincipalContext principalCtx = authnContext.ensureSubcontext(RequestedPrincipalContext.class);
         logger.info("Overriding the principal authn context class ref to {}", clazz);
         if (principalCtx != null) {
             final List<Principal> principals = new ArrayList<>();
