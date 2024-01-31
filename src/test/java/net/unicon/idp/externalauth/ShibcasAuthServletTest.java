@@ -26,8 +26,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.any;
@@ -82,6 +82,7 @@ public class ShibcasAuthServletTest {
         //Mock some objects.
         final HttpServletRequest request = createDoGetHttpServletRequest(CONVERSATION_TICKET, TICKET, "false");
         final HttpServletResponse response = createMockHttpServletResponse();
+
         final Cas20ServiceTicketValidator ticketValidator = PowerMockito.mock(Cas20ServiceTicketValidator.class);
         PowerMockito.when(ticketValidator.validate(TICKET, URL_WITH_CONVERSATION)).thenThrow(new TicketValidationException("Invalid Ticket"));
 
@@ -350,7 +351,7 @@ public class ShibcasAuthServletTest {
 
         return request;
     }
-    
+
 
     private HttpServletRequest createDoGetHttpServletRequest(final String queryString, final String ticket, final String gatewayAttempted, final String entityId) {
     	final HttpServletRequest request = createMockHttpServletRequest();
@@ -383,7 +384,7 @@ public class ShibcasAuthServletTest {
         final ServletContext servletContext = Mockito.mock(ServletContext.class);
         final ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
         final Environment environment = Mockito.mock(Environment.class);
-        
+
         BDDMockito.given(config.getServletContext()).willReturn(servletContext);
         BDDMockito.given(servletContext.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE)).willReturn(applicationContext);
         BDDMockito.given(applicationContext.getEnvironment()).willReturn(environment);
