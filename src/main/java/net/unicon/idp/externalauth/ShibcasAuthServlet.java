@@ -280,7 +280,7 @@ public class ShibcasAuthServlet extends HttpServlet {
      * in which case we should not modify the service URL returned by CAS WebUtils; this
      * avoids appending the entity ID twice when entityIdLocation=embed, since the ID is already
      * embedded in the string during validation.
-     * @throws TicketValidationException 
+     * @throws TicketValidationException
      */
     protected String constructServiceUrl(final HttpServletRequest request, final HttpServletResponse response, final boolean isValidatingTicket) throws TicketValidationException {
         if(isValidatingTicket && "embed".equalsIgnoreCase(entityIdLocation)) {
@@ -292,7 +292,7 @@ public class ShibcasAuthServlet extends HttpServlet {
         	}
                 return WebUtils.constructServiceUrl(request, response, null, serverName, serviceParameterName, artifactParameterName, true);
         }
-        return constructServiceUrl(request, response);        
+        return constructServiceUrl(request, response);
     }
 
     private void loadErrorPage(final HttpServletRequest request, final HttpServletResponse response) {
