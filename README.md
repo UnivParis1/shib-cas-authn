@@ -23,7 +23,7 @@ Software Requirements
 -------------------------------------------------------------
 
 This minimum supported version of Shibboleth Identity Provider is `5.0.0`. 
-See [releases](https://github.com/Unicon/shib-cas-authn/releases) to find the the appropriate version.
+See [releases](https://github.com/Renater/shib-cas-authn/releases) to find the the appropriate version.
 
 
 Installation
