@@ -16,8 +16,8 @@ version = project.version
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://build.shibboleth.net/maven/releases" }
-    maven { url "https://build.shibboleth.net/maven/thirdparty" }
+    maven { url = "https://build.shibboleth.net/maven/releases" }
+    maven { url = "https://build.shibboleth.net/maven/thirdparty" }
 }
 
 test.onlyIf { !Boolean.getBoolean('skip.tests') }
