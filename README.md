@@ -18,7 +18,7 @@ Please note that Unicon will no longer be upgrading nor maintaining this plugin 
 Software Requirements
 -------------------------------------------------------------
 
-This minimum supported version of Shibboleth Identity Provider is `5.1.2`.
+This minimum supported version of Shibboleth Identity Provider is `5.2.1`.
 See [releases](https://github.com/Unicon/shib-cas-authn/releases) to find the the appropriate version.
 
 
