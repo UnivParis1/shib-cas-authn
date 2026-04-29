@@ -29,7 +29,7 @@ Installation
 
 - Download and extract the "latest release" zip or tar [from releases](https://github.com/Unicon/shib-cas-authn/releases).
 - Copy the no-conversation-state.jsp file (also found inside this repo in IDP_HOME/edit-webapp) to your IdP's `IDP_HOME/edit-webapp`
-- Copy two included jar files (`cas-client-core-x.x.x.jar` and `shib-casuathenticator-x.x.x.jar`) into the `IDP_HOME/edit-webapp/WEB-INF/lib`.
+- Copy two included jar files (`cas-client-core-x.x.x.jar` and `shib-cas-authenticator-x.x.x.jar`) into the `IDP_HOME/edit-webapp/WEB-INF/lib`.
 - Copy and Update the IdP's `web.xml`.
 - Update the IdP's `authn.properties` file.
 - Rebuild the war file.
@@ -52,7 +52,7 @@ In the `IDP_HOME/conf/authn/authn.properties` file, ensure the context path poin
 ...
 idp.authn.flows = External
 
-dp.authn.External.externalAuthnPath = contextRelative:Authn/External
+idp.authn.External.externalAuthnPath = contextRelative:Authn/External
 
 shibcas.casServerUrlPrefix = https://cassserver.example.edu/cas
 shibcas.casServerLoginUrl = ${shibcas.casServerUrlPrefix}/login
