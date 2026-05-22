@@ -25,10 +25,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CasDuoSecurityRefedsAuthnMethodTranslator implements CasToShibTranslator, EnvironmentAware {
-    private final Logger logger = LoggerFactory.getLogger(CasDuoSecurityRefedsAuthnMethodTranslator.class);
+public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, EnvironmentAware {
+    private final Logger logger = LoggerFactory.getLogger(CasMFARefedsAuthnMethodTranslator.class);
 
     private static final String REFEDS = "https://refeds.org/profile/mfa";
+
+    private static final Set<String> ALLOWED_MFA_AUTHN_CLASSES = Set.of(
+            "mfa-simple", "mfa-webauthn", "mfa-duo",
+            "mfa-radius", "mfa-gauth", "mfa-yubikey",
+            "mfa-inwebo", "mfa-esupotp"
+        );
 
     private Environment environment;
 
@@ -69,16 +75,14 @@ public class CasDuoSecurityRefedsAuthnMethodTranslator implements CasToShibTrans
         }
 
         final Object clazz = assertion.getPrincipal().getAttributes().get("authnContextClass");
-        logger.debug("Located asserted authentication context class [{}]", clazz);
 
-        if (clazz.equals("mfa-duo")) {
+        if (ALLOWED_MFA_AUTHN_CLASSES.contains(clazz.toString())) {
             overrideAuthnContextClass(REFEDS, request, authenticationKey);
-            logger.info("Validation payload successfully asserts the authentication context class for mfa-duo; Context class is set to {}", REFEDS);
-            return;
+            logger.info("Validation payload successfully asserts the authentication context class for {}; Context class is set to {}", clazz, REFEDS);
+        } else {
+            logger.warn("Authentication context class provided by CAS is not allowed. The requested authentication method to be used shall be {} and is left unmodified", authnMethod);
+            overrideAuthnContextClass(authnMethod, request, authenticationKey);
         }
-        logger.debug("Authentication context class [{}] provided by CAS is not one by Duo Security. "
-            + "The requested authentication method to be used shall be {} and is left unmodified", clazz, authnMethod);
-        overrideAuthnContextClass(clazz.toString(), request, authenticationKey);
     }
 
     private void overrideAuthnContextClass(final String clazz, final HttpServletRequest request, final String authenticationKey) throws Exception {

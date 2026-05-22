@@ -105,16 +105,23 @@ authentication context class.
 
 The supported multifactor authentication providers are listed below:
 
-- Duo Security  (Requesting `authn_method=mfa-duo` and expecting validation payload attribute `authnContextClass=mfa-duo`)
+- MFA Simple (Requesting `authn_method=mfa-simple` and expecting validation payload attribute `authnContextClass=mfa-simple`)
+- Duo Security (Requesting `authn_method=mfa-duo` and expecting validation payload attribute `authnContextClass=mfa-duo`)
+- FIDO2 WebAuthn (Requesting `authn_method=mfa-webauthn` and expecting validation payload attribute `authnContextClass=mfa-webauthn`)
+- Google Authenticator (Requesting `authn_method=mfa-gauth` and expecting validation payload attribute `authnContextClass=mfa-gauth`)
+- Yubikey (Requesting `authn_method=mfa-yubikey` and expecting validation payload attribute `authnContextClass=mfa-yubikey`)
+- Radius (Requesting `authn_method=mfa-radius` and expecting validation payload attribute `authnContextClass=mfa-radius`)
+- Inwebo / Trustbuilder (Requesting `authn_method=mfa-inwebo` and expecting validation payload attribute `authnContextClass=mfa-inwebo`)
+- ESUP-OTP (Requesting `authn_method=mfa-esupotp` and expecting validation payload attribute `authnContextClass=mfa-esupotp`)
 
 
 #### REFEDS MFA Profile Configuration
 
-In the `IDP_HOME/conf/idp.properties` file, ensure the following settings are set:
+In the `IDP_HOME/conf/authn/authn.properties` file, ensure the following settings are set:
 
 ```properties
-shibcas.casToShibTranslators = net.unicon.idp.externalauth.CasDuoSecurityRefedsAuthnMethodTranslator
-shibcas.parameterBuilders = net.unicon.idp.authn.provider.extra.CasMultifactorRefedsToDuoSecurityAuthnMethodParameterBuilder
+shibcas.casToShibTranslators = net.unicon.idp.externalauth.CasMFARefedsAuthnMethodTranslator
+shibcas.parameterBuilders = net.unicon.idp.authn.provider.extra.CasMultifactorRefedsToXXXXXAuthnMethodParameterBuilder
 ```
 
 Finally add the authn context refs in the supported principals property list to in `IDP_HOME/conf/authn/authn.properties` as shown below.
