@@ -7,6 +7,7 @@ import net.shibboleth.idp.authn.principal.PrincipalEvalPredicate;
 import net.shibboleth.idp.authn.principal.PrincipalEvalPredicateFactory;
 import net.shibboleth.idp.authn.principal.PrincipalSupportingComponent;
 import net.shibboleth.idp.saml.authn.principal.AuthnContextClassRefPrincipal;
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.client.validation.Assertion;
 import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.saml2.core.AuthnContext;
@@ -38,9 +39,30 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
 
     private Environment environment;
 
+    /**
+     * The default authentication context class to include in the response
+     * if none is specified via the service.
+     */
+    private String defaultAuthnContextClass;
+
     @Override
     public void setEnvironment(final Environment environment) {
         this.environment = environment;
+        // init properties when the environment is intiated or set
+        this.defaultAuthnContextClass = initDefaultAuthnContextClass();
+
+    }
+
+    /**
+     * Check the idp's idp.properties, authn.properties files for the intialization
+     * of the default AuthnContextClass when MFA can't be done
+     *
+     * @return String defaultAuthnContextClass
+     */
+    private String initDefaultAuthnContextClass() {
+        String initiatedDefaultAuthnContextClass = StringUtils.defaultIfBlank(environment.getProperty("shibcas.defaultAuthnContextClass"), AuthnContext.PPT_AUTHN_CTX);
+        logger.debug("shibcas.defaultAuthnContextClass: {}", initiatedDefaultAuthnContextClass);
+        return initiatedDefaultAuthnContextClass;
     }
 
     @Override
@@ -54,23 +76,23 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
         }
         final RequestedPrincipalContext principalCtx = authnContext.ensureSubcontext(RequestedPrincipalContext.class);
         if (principalCtx == null || principalCtx.getRequestedPrincipals().isEmpty()) {
-            logger.debug("No requested principal context is available in the authentication context; Overriding class to {}", AuthnContext.PPT_AUTHN_CTX);
-            overrideAuthnContextClass(AuthnContext.PPT_AUTHN_CTX, request, authenticationKey);
+            logger.debug("No requested principal context is available in the authentication context; Overriding class to {}", defaultAuthnContextClass);
+            overrideAuthnContextClass(defaultAuthnContextClass, request, authenticationKey);
             return;
         }
 
         final Principal principal = new AuthnContextClassRefPrincipal(REFEDS);
         final Principal attribute = principalCtx.getRequestedPrincipals().stream().filter(p -> p.equals(principal)).findFirst().orElse(null);
         if (attribute == null) {
-            logger.debug("No authn context class ref principal is found in the requested principals; overriding to {}", AuthnContext.PPT_AUTHN_CTX);
-            overrideAuthnContextClass(AuthnContext.PPT_AUTHN_CTX, request, authenticationKey);
+            logger.debug("No authn context class ref principal is found in the requested principals; overriding to {}", defaultAuthnContextClass);
+            overrideAuthnContextClass(defaultAuthnContextClass, request, authenticationKey);
             return;
         }
         final String authnMethod = attribute.getName();
         logger.debug("Requested authn method provided by IdP is {}", authnMethod);
         if (!assertion.getPrincipal().getAttributes().containsKey("authnContextClass")) {
-            logger.debug("No authentication context class is provided by CAS; Overriding context class to {}", AuthnContext.PPT_AUTHN_CTX);
-            overrideAuthnContextClass(AuthnContext.PPT_AUTHN_CTX, request, authenticationKey);
+            logger.debug("No authentication context class is provided by CAS; Overriding context class to {}", defaultAuthnContextClass);
+            overrideAuthnContextClass(defaultAuthnContextClass, request, authenticationKey);
             return;
         }
 

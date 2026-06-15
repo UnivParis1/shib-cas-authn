@@ -78,6 +78,12 @@ shibcas.serverName = https://shibserver.example.edu
 # (alternative is to use "idp.session.enabled = false" but you loose SLO)
 #shibcas.doNotCache = false
 
+# Specify the default Authentication Context Class in the MFA context,
+# It is useful when there is no authentication context class provided by CAS or no requested principal context available in the authentication context
+# Default is the IdP AuthnContext.PPT_AUTHN_CTX ('urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport')
+# (it will be for example 'https://refeds.org/profile/sfa' when only the REFEDS profiles are used)
+#shibcas.defaultAuthnContextClass = urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+
 ...
 ```
 
@@ -130,6 +136,7 @@ Finally add the authn context refs in the supported principals property list to 
 ```properties
 idp.authn.External.supportedPrincipals = \
     saml2/urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport, \
+    saml2/https://refeds.org/profile/sfa, \
     saml2/https://refeds.org/profile/mfa
 ```
 
