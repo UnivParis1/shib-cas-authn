@@ -89,9 +89,9 @@ From the `IDP_HOME/bin` directory, run `./build.sh` or `build.bat` to rebuild th
 #### OPTIONAL EntityId / CAS Service Passing
 By setting `shibcas.entityIdLocation=embed`, shib-cas-authn will embed the entityId in the service string so that CAS Server
 can use the entityId when evaluating a service registry entry match. Using serviceIds of something like:
-`https://shibserver.example.edu/idp/Authn/ExtCas\?conversation=[a-z0-9]*&entityId=http://testsp.school.edu/sp`
+`https://shibserver.example.edu/idp/Authn/External\?conversation=[a-z0-9]*&entityId=http://testsp.school.edu/sp`
 or
-`https://shibserver.example.edu/idp/Authn/ExtCas\?conversation=[a-z0-9]*&entityId=http://test.unicon.net/sp`
+`https://shibserver.example.edu/idp/Authn/External\?conversation=[a-z0-9]*&entityId=http://test.unicon.net/sp`
 will match as two different entries in the service registry which will allow as CAS admin to enable MFA or use access strategies on an SP by SP basis.
 
 

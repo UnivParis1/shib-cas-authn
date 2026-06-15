@@ -44,9 +44,9 @@ public class ShibcasAuthServletTest {
     private String E1S1 = "E1S1";
     private String JDOE = "jdoe";
     private String TICKET = "ST-1234-123456789-a";
-    private String URL_WITH_CONVERSATION = "https://shibserver.example.edu/idp/Authn/ExtCas?conversation=e1s1";
-    private String URL_WITH_CONVERSATION_GATEWAY_ATTEMPTED = "https://shibserver.example.edu/idp/Authn/ExtCas?conversation=e1s1&gatewayAttempted=true";
-    private String URL_WITH_CONVERSATION_EMBEDDED_ENTITYID = "https://shibserver.example.edu/idp/Authn/ExtCas?conversation=e1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp";
+    private String URL_WITH_CONVERSATION = "https://shibserver.example.edu/idp/Authn/External?conversation=e1s1";
+    private String URL_WITH_CONVERSATION_GATEWAY_ATTEMPTED = "https://shibserver.example.edu/idp/Authn/External?conversation=e1s1&gatewayAttempted=true";
+    private String URL_WITH_CONVERSATION_EMBEDDED_ENTITYID = "https://shibserver.example.edu/idp/Authn/External?conversation=e1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp";
 
     @Test
     public void testDoGetStandard() throws Exception {
@@ -230,7 +230,7 @@ public class ShibcasAuthServletTest {
 
         final String result = shibcasAuthServlet.constructServiceUrl(request, response);
 
-        assertEquals("https://shibserver.example.edu/idp/Authn/ExtCas?conversation=e1s1", result);
+        assertEquals("https://shibserver.example.edu/idp/Authn/External?conversation=e1s1", result);
     }
 
     @Test
@@ -245,7 +245,7 @@ public class ShibcasAuthServletTest {
 
         final String result = shibcasAuthServlet.constructServiceUrl(request, response, true);
 
-        assertEquals("https://shibserver.example.edu/idp/Authn/ExtCas?conversation=e1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp", result);
+        assertEquals("https://shibserver.example.edu/idp/Authn/External?conversation=e1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp", result);
     }
 
 
@@ -261,7 +261,7 @@ public class ShibcasAuthServletTest {
         shibcasAuthServlet.init(createMockServletConfig());
 
         shibcasAuthServlet.startLoginRequest(request, response, false, false, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExternal%3Fconversation%3De1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp");
     }
 
     @Test
@@ -276,7 +276,7 @@ public class ShibcasAuthServletTest {
         shibcasAuthServlet.init(createMockServletConfig("embed"));
 
         shibcasAuthServlet.startLoginRequest(request, response, false, false, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1%26entityId%3Dhttp%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExternal%3Fconversation%3De1s1%26entityId%3Dhttp%3A%2F%2Ftest.edu%2Fsp");
     }
 
     @Test
@@ -291,7 +291,7 @@ public class ShibcasAuthServletTest {
         shibcasAuthServlet.init(createMockServletConfig("append"));
 
         shibcasAuthServlet.startLoginRequest(request, response, false, false, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExternal%3Fconversation%3De1s1&entityId=http%3A%2F%2Ftest.edu%2Fsp");
     }
 
     @Test
@@ -307,7 +307,7 @@ public class ShibcasAuthServletTest {
 
         //Passive
         shibcasAuthServlet.startLoginRequest(request, response, false, true, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1%26gatewayAttempted%3Dtrue&gateway=true&entityId=http%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExternal%3Fconversation%3De1s1%26gatewayAttempted%3Dtrue&gateway=true&entityId=http%3A%2F%2Ftest.edu%2Fsp");
     }
 
     @Test
@@ -323,7 +323,7 @@ public class ShibcasAuthServletTest {
 
         //Forced
         shibcasAuthServlet.startLoginRequest(request, response, true, false, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&renew=true&entityId=http%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExternal%3Fconversation%3De1s1&renew=true&entityId=http%3A%2F%2Ftest.edu%2Fsp");
        }
 
     @Test
@@ -339,7 +339,7 @@ public class ShibcasAuthServletTest {
 
         //Passive and Forced
         shibcasAuthServlet.startLoginRequest(request, response, true, true, "");
-        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1%26gatewayAttempted%3Dtrue&renew=true&gateway=true&entityId=http%3A%2F%2Ftest.edu%2Fsp");
+        verify(response).sendRedirect("https://cassserver.example.edu/cas/login?service=https%3A%2F%2Fshibserver.example.edu%2Fidp%2FAuthn%2FExternal%3Fconversation%3De1s1%26gatewayAttempted%3Dtrue&renew=true&gateway=true&entityId=http%3A%2F%2Ftest.edu%2Fsp");
     }
 
     private HttpServletRequest createDoGetHttpServletRequest(final String queryString, final String ticket, final String gatewayAttempted) {
@@ -413,8 +413,8 @@ public class ShibcasAuthServletTest {
             BDDMockito.given(request.getHeader("Host")).willReturn("shibserver.example.edu");
             //BDDMockito.given(request.getHeader("X-Forwarded-Host")).willReturn();
             BDDMockito.given(request.getServerPort()).willReturn(443);
-            BDDMockito.given(request.getRequestURI()).willReturn("/idp/Authn/ExtCas");
-            BDDMockito.given(request.getRequestURL()).willReturn(new StringBuffer("/idp/Authn/ExtCas"));
+            BDDMockito.given(request.getRequestURI()).willReturn("/idp/Authn/External");
+            BDDMockito.given(request.getRequestURL()).willReturn(new StringBuffer("/idp/Authn/External"));
             BDDMockito.given(request.getAttribute(ExternalAuthentication.RELYING_PARTY_PARAM)).willReturn("http://test.edu/sp");
 
             return request;
