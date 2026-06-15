@@ -72,11 +72,11 @@ shibcas.serverName = https://shibserver.example.edu
 # or embedded in the "service" querystring parameter - `append` (default) or `embed`
 # shibcas.entityIdLocation = append
 
-# If you decide to embed entityId in querystring, CAS can decide MFA based on entityId.
-# In that case you do not want to cache the result
-# (otherwise the first successful CAS login will be kept)
+# Specify if you decide to embed entityId in querystring, CAS can decide MFA based on entityId.
+# In that case you do not want to cache the result (when 'true')
+# Otherwise when 'false' (default), the first successful CAS login will be kept
 # (alternative is to use "idp.session.enabled = false" but you loose SLO)
-#shibcas.doNotCache = true
+#shibcas.doNotCache = false
 
 ...
 ```
