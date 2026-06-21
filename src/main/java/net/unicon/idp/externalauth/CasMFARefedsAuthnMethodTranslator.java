@@ -30,7 +30,13 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
     private final Logger logger = LoggerFactory.getLogger(CasMFARefedsAuthnMethodTranslator.class);
 
     private static final String REFEDS = "https://refeds.org/profile/mfa";
+    private static final String EIDAS2 = "http://eidas.europa.eu/LoA/substantial";
+    private static final String EIDAS3 = "http://eidas.europa.eu/LoA/high";
 
+    private static final Set<String> ALLOWED_KNOWN_MFA_AUTHN_CLASSES = Set.of(
+            REFEDS, EIDAS2, EIDAS3
+        );
+    
     private static final Set<String> ALLOWED_MFA_AUTHN_CLASSES = Set.of(
             "mfa-simple", "mfa-webauthn", "mfa-duo",
             "mfa-radius", "mfa-gauth", "mfa-yubikey",
@@ -93,7 +99,10 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
 
         final Object clazz = assertion.getPrincipal().getAttributes().get("authnContextClass");
 
-        if (ALLOWED_MFA_AUTHN_CLASSES.contains(clazz.toString())) {
+        if (ALLOWED_KNOWN_MFA_AUTHN_CLASSES.contains(clazz.toString())) {
+            overrideAuthnContextClass(clazz.toString(), request, authenticationKey);
+            logger.info("Validation payload successfully asserts the authentication context class {}", clazz);
+        } else if (ALLOWED_MFA_AUTHN_CLASSES.contains(clazz.toString())) {
             overrideAuthnContextClass(REFEDS, request, authenticationKey);
             logger.info("Validation payload successfully asserts the authentication context class for {}; Context class is set to {}", clazz, REFEDS);
         } else {
