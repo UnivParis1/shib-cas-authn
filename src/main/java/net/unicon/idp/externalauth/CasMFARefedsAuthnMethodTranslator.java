@@ -76,7 +76,7 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
             return;
         }
         final RequestedPrincipalContext principalCtx = authnContext.ensureSubcontext(RequestedPrincipalContext.class);
-        if (principalCtx == null || principalCtx.getRequestedPrincipals().isEmpty()) {
+        if (principalCtx == null) {
             logger.debug("No requested principal context is available in the authentication context; Overriding class to {}", defaultAuthnContextClass);
             overrideAuthnContextClass(defaultAuthnContextClass, request, authenticationKey);
             return;
@@ -84,12 +84,7 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
 
         final Principal principal = new AuthnContextClassRefPrincipal(REFEDS);
         final Principal attribute = principalCtx.getRequestedPrincipals().stream().filter(p -> p.equals(principal)).findFirst().orElse(null);
-        if (attribute == null) {
-            logger.debug("No authn context class ref principal is found in the requested principals; overriding to {}", defaultAuthnContextClass);
-            overrideAuthnContextClass(defaultAuthnContextClass, request, authenticationKey);
-            return;
-        }
-        final String authnMethod = attribute.getName();
+        final String authnMethod = attribute == null ? null : attribute.getName();
         logger.debug("Requested authn method provided by IdP is {}", authnMethod);
         if (!assertion.getPrincipal().getAttributes().containsKey("authnContextClass")) {
             logger.debug("No authentication context class is provided by CAS; Overriding context class to {}", defaultAuthnContextClass);
