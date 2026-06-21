@@ -32,6 +32,7 @@ public class CasMFARefedsAuthnMethodTranslator implements CasToShibTranslator, E
     private static final String REFEDS = "https://refeds.org/profile/mfa";
 
     private static final Set<String> ALLOWED_MFA_AUTHN_CLASSES = Set.of(
+            REFEDS,
             "mfa-simple", "mfa-webauthn", "mfa-duo",
             "mfa-radius", "mfa-gauth", "mfa-yubikey",
             "mfa-inwebo", "mfa-esupotp"
