@@ -23,6 +23,8 @@ public abstract class CasAuthnMethodParameterBuilder implements IParameterBuilde
     private final Logger logger = LoggerFactory.getLogger(CasAuthnMethodParameterBuilder.class);
     protected ApplicationContext applicationContext;
     private static final String REFEDS = "https://refeds.org/profile/mfa";
+    private static final String EIDAS2 = "http://eidas.europa.eu/LoA/substantial";
+    private static final String EIDAS3 = "http://eidas.europa.eu/LoA/high";
 
     @Override
     public String getParameterString(final HttpServletRequest request, final String authenticationKey) {
@@ -38,14 +40,15 @@ public abstract class CasAuthnMethodParameterBuilder implements IParameterBuilde
                 logger.debug("No authentication method parameter is found in the request attributes");
                 return "";
             }
-            final Principal principal = new AuthnContextClassRefPrincipal(REFEDS);
-            final Principal attribute = principalCtx.getRequestedPrincipals().stream().filter(p -> p.equals(principal)).findFirst().orElse(null);
-            if (attribute == null) {
-                return "";
-            }
-            final String casMethod = getCasAuthenticationMethodFor(REFEDS);
-            if (casMethod != null && !casMethod.isEmpty()) {
-                return "&authn_method=" + casMethod;
+            for (var acr : new String[]{ REFEDS, EIDAS2, EIDAS3 }) {
+                final Principal principal = new AuthnContextClassRefPrincipal(acr);
+                final Principal attribute = principalCtx.getRequestedPrincipals().stream().filter(p -> p.equals(principal)).findFirst().orElse(null);
+                if (attribute != null) {
+                    final String casMethod = getCasAuthenticationMethodFor(acr);
+                    if (casMethod != null && !casMethod.isEmpty()) {
+                        return "&authn_method=" + casMethod;
+                    }
+                }
             }
             return "";
         }catch (final Exception e) {
