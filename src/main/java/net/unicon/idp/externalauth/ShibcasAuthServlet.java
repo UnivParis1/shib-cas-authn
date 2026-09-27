@@ -134,9 +134,8 @@ public class ShibcasAuthServlet extends HttpServlet {
             if (passive) {
                 serviceUrl += "&gatewayAttempted=true";
             }
-             serviceUrl += getAdditionalParameters(request, authenticationKey);
 
-            final String loginUrl = constructRedirectUrl(serviceUrl, force, passive);
+            final String loginUrl = constructRedirectUrl(serviceUrl, force, passive) + getAdditionalParameters(request, authenticationKey);
             logger.debug("loginUrl: {}", loginUrl);
             response.sendRedirect(loginUrl);
         } catch (final IOException e) {
